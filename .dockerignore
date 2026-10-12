@@ -4,3 +4,5 @@ _documentation
 .git/
 __pycache__/
 .pytest_cache/
+*.db
+.env

@@ -1,28 +1,46 @@
 # -----------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-10-12
+#   last update     : 2026-10-13
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -----------------------------------------------------------------------------------------
 """
 Tests for app/main.py through FastAPI's TestClient (no server needed).
 
+Each test runs against its own empty SQLite file, swapped in for the real database
+through FastAPI's dependency_overrides, so no Docker or PostgreSQL is needed.
+
 Run: python -m pytest   (from the repo root, so `app` is importable)
 """
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-from app.main import app, notes
+from app.db import Base, get_session
+from app.main import app
 
 client = TestClient(app)
 
 
 @pytest.fixture(autouse=True)
-def empty_store():
-    """Each test starts with no notes, so tests don't depend on each other's order."""
-    notes.clear()
+def test_db(tmp_path):
+    """Each test gets its own empty SQLite file, so tests never touch real data."""
+    engine = create_engine(f"sqlite:///{tmp_path / 'test.db'}",
+                           connect_args={"check_same_thread": False})
+    Base.metadata.create_all(engine)
+    TestSession = sessionmaker(bind=engine)
+
+    def session_override():
+        with TestSession() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    yield
+    app.dependency_overrides.clear()
+    engine.dispose()
 
 
 def test_health():

@@ -1,12 +1,17 @@
-# The local stack: the app and its PostgreSQL database.
+# The local stack: the app, which stores its notes in the PostgreSQL database db.
 # Start: docker compose up --build    Stop: Ctrl+C, then docker compose down
-# Needs a .env file next to it (copy .env.example and set a password).
+# Needs a .env file next to it (python main.py --init creates it from .env.example).
 
 services:
   app:                  # a name you choose; containers find each other by it
     build: .            # build the image from the Dockerfile in this folder
     ports:
       - "8000:8000"     # same as docker run -p 8000:8000
+    environment:        # the app reads this in app/db.py; db = the service name below
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      - db              # start db before app (doesn't wait until db is ready)
+    restart: on-failure # if app crashes (e.g. db not ready yet), start it again
 
   db:
     image: postgres:17-alpine     # official image; alpine = smaller download
