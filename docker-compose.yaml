@@ -1,0 +1,21 @@
+# The local stack: the app and its PostgreSQL database.
+# Start: docker compose up --build    Stop: Ctrl+C, then docker compose down
+# Needs a .env file next to it (copy .env.example and set a password).
+
+services:
+  app:                  # a name you choose; containers find each other by it
+    build: .            # build the image from the Dockerfile in this folder
+    ports:
+      - "8000:8000"     # same as docker run -p 8000:8000
+
+  db:
+    image: postgres:17-alpine     # official image; alpine = smaller download
+    environment:                  # the image creates this user and database on first start
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db-data:/var/lib/postgresql/data   # keep the data outside the container
+
+volumes:
+  db-data:              # a named volume, managed by Docker
