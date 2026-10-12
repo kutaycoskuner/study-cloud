@@ -31,6 +31,8 @@ study-cloud/
 │   └── main.py          # FastAPI app: /health and the notes endpoints
 ├── tests/
 │   └── test_main.py     # endpoint tests (TestClient, no server needed)
+├── .dockerignore        # what stays out of the image build
+├── Dockerfile           # image recipe for the app
 └── requirements.txt     # app and test dependencies
 ```
 
@@ -56,6 +58,10 @@ uvicorn app.main:app --reload
 
 # Run the tests (from the repo root, so `app` is importable)
 python -m pytest
+
+# Build the image and run it as a container (http://127.0.0.1:8000/docs)
+docker build -t study-cloud .
+docker run --rm -p 8000:8000 study-cloud
 ```
 
 ------------------------------------------------------------------------------------------
@@ -64,6 +70,7 @@ python -m pytest
 
 - **Python 3.10+**: [Install Python](https://www.python.org/downloads/)
 - **Git**: [Install Git](https://git-scm.com/downloads)
+- **Docker Desktop** (optional, for the container): [Install Docker](https://docs.docker.com/get-docker/)
 
 ```bash
 # 1. Clone the repository
