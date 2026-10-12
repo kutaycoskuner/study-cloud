@@ -1,0 +1,22 @@
+# The app: Kubernetes keeps `replicas` pods of the study-cloud image running.
+# Apply: kubectl apply -f kubernetes/
+
+apiVersion: apps/v1          # which part of the Kubernetes API this object belongs to
+kind: Deployment             # what kind of object this is
+metadata:
+  name: app                  # its name in the cluster
+spec:
+  replicas: 2                # how many pods to keep running
+  selector:
+    matchLabels:
+      app: study-cloud       # "the pods with this label are mine"
+  template:                  # the blueprint for each pod
+    metadata:
+      labels:
+        app: study-cloud     # every pod gets this label, so the selector finds it
+    spec:
+      containers:
+        - name: app
+          image: study-cloud:dev   # the image you just loaded
+          ports:
+            - containerPort: 8000

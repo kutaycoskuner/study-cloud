@@ -15,9 +15,9 @@
 
 ## Roadmap
 
-1. **Service** (in progress): FastAPI app with a health check and a notes API, plus tests
-2. **Docker:** Dockerfile for the API, Docker Compose for API + PostgreSQL
-3. **Kubernetes, locally:** the same containers in a local cluster
+1. **Service** (done): FastAPI app with a health check and a notes API, plus tests
+2. **Docker** (done): Dockerfile, Compose with PostgreSQL, data in a volume
+3. **Kubernetes, locally** (in progress): app Deployment and Service on a local kind cluster; PostgreSQL in the cluster next
 4. **AWS:** the image in ECR, running on EC2 or ECS (free tier)
 5. **Terraform:** the AWS setup as code
 
@@ -28,7 +28,11 @@
 ```
 study-cloud/
 ├── app/
+│   ├── db.py            # database connection and the notes table
 │   └── main.py          # FastAPI app: /health and the notes endpoints
+├── kubernetes/
+│   ├── app-deployment.yaml  # keeps 2 app pods running
+│   └── app-service.yaml     # stable name "app" in front of the app pods
 ├── scripts/
 │   └── init_env.py      # creates .env from .env.example (run via main.py --init)
 ├── tests/
@@ -73,7 +77,7 @@ python main.py --init --dry-run
 | POST   | `/notes`          | creates a note from `{"text": "..."}` |
 | GET    | `/notes/{id}`     | returns one note, 404 if missing     |
 
-Notes are kept in memory for now, so they are lost when the server restarts.
+Notes are stored in the database `DATABASE_URL` points to: PostgreSQL in Docker Compose, a local `notes.db` (SQLite) otherwise. Tests use their own temporary database.
 
 ```bash
 # Start the server (reloads on code changes)
@@ -97,11 +101,41 @@ docker compose down
 
 ------------------------------------------------------------------------------------------
 
+## Run on Kubernetes (local)
+
+Needs Docker Desktop, kind and kubectl (see "Setup Python Environment").
+
+```bash
+# 1. Create a local cluster (a Docker container running Kubernetes)
+kind create cluster --name study-cloud
+
+# 2. Build the image with a fixed tag and copy it into the cluster
+docker build -t study-cloud:dev .
+kind load docker-image study-cloud:dev --name study-cloud
+
+# 3. Create the app Deployment and Service
+kubectl apply -f kubernetes/
+kubectl get pods
+
+# 4. Open a tunnel to the Service (http://127.0.0.1:8000/docs)
+kubectl port-forward service/app 8000:8000
+
+# Pause / resume the cluster, or delete it completely
+docker stop study-cloud-control-plane
+docker start study-cloud-control-plane
+kind delete cluster --name study-cloud
+```
+
+For now each pod stores notes in its own SQLite file, lost when the pod is replaced; PostgreSQL in the cluster comes next.
+
+------------------------------------------------------------------------------------------
+
 ## Setup Python Environment
 
 - **Python 3.10+**: [Install Python](https://www.python.org/downloads/)
 - **Git**: [Install Git](https://git-scm.com/downloads)
 - **Docker Desktop** (optional, for the container): [Install Docker](https://docs.docker.com/get-docker/)
+- **kind** and **kubectl** (optional, for the local cluster): [Install kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation), [Install kubectl](https://kubernetes.io/docs/tasks/tools/)
 
 ```bash
 # 1. Clone the repository
