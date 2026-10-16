@@ -1,0 +1,10 @@
+# A stable name "db" for the database pod, port 5432 (like the service name in Compose).
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: db
+  ports:
+    - port: 5432

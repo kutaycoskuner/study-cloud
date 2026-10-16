@@ -17,9 +17,17 @@
 
 1. **Service** (done): FastAPI app with a health check and a notes API, plus tests
 2. **Docker** (done): Dockerfile, Compose with PostgreSQL, data in a volume
-3. **Kubernetes, locally** (in progress): app Deployment and Service on a local kind cluster; PostgreSQL in the cluster next
+3. **Kubernetes, locally** (done): app and PostgreSQL on a local kind cluster: Deployments, Services, Secret, persistent storage, health probes
 4. **AWS:** the image in ECR, running on EC2 or ECS (free tier)
 5. **Terraform:** the AWS setup as code
+
+------------------------------------------------------------------------------------------
+
+## Documentation
+
+- [docs/](docs/README.md): background and explanations, indexed
+    - [Docker](docs/docker.md): the image, containers, and the app with PostgreSQL in Docker Compose
+    - [Kubernetes](docs/kubernetes.md): the objects this project uses (Deployment, Service, Secret, storage) and how they fit together
 
 ------------------------------------------------------------------------------------------
 
@@ -30,9 +38,16 @@ study-cloud/
 ├── app/
 │   ├── db.py            # database connection and the notes table
 │   └── main.py          # FastAPI app: /health and the notes endpoints
+├── docs/
+│   ├── README.md        # index of the docs
+│   ├── docker.md        # Docker and Compose concepts and lessons
+│   └── kubernetes.md    # Kubernetes concepts and lessons
 ├── kubernetes/
 │   ├── app-deployment.yaml  # keeps 2 app pods running
-│   └── app-service.yaml     # stable name "app" in front of the app pods
+│   ├── app-service.yaml     # stable name "app" in front of the app pods
+│   ├── db-deployment.yaml   # 1 PostgreSQL pod, credentials from the Secret
+│   ├── db-service.yaml      # stable name "db" in front of the db pod
+│   └── db-storage.yaml      # storage claim for the database data
 ├── scripts/
 │   └── init_env.py      # creates .env from .env.example (run via main.py --init)
 ├── tests/
@@ -99,11 +114,13 @@ docker compose up --build
 docker compose down
 ```
 
+How the image, the containers and Compose work: [docs/docker.md](docs/docker.md).
+
 ------------------------------------------------------------------------------------------
 
 ## Run on Kubernetes (local)
 
-Needs Docker Desktop, kind and kubectl (see "Setup Python Environment").
+Needs Docker Desktop, kind and kubectl (see "Setup Python Environment"). What these objects are and how they fit together: [docs/kubernetes.md](docs/kubernetes.md).
 
 ```bash
 # 1. Create a local cluster (a Docker container running Kubernetes)
@@ -113,11 +130,14 @@ kind create cluster --name study-cloud
 docker build -t study-cloud:dev .
 kind load docker-image study-cloud:dev --name study-cloud
 
-# 3. Create the app Deployment and Service
+# 3. Create the database Secret from .env (python main.py --init creates .env)
+kubectl create secret generic db-credentials --from-env-file=.env
+
+# 4. Create the app and database objects
 kubectl apply -f kubernetes/
 kubectl get pods
 
-# 4. Open a tunnel to the Service (http://127.0.0.1:8000/docs)
+# 5. Open a tunnel to the Service (http://127.0.0.1:8000/docs)
 kubectl port-forward service/app 8000:8000
 
 # Pause / resume the cluster, or delete it completely
@@ -126,7 +146,7 @@ docker start study-cloud-control-plane
 kind delete cluster --name study-cloud
 ```
 
-For now each pod stores notes in its own SQLite file, lost when the pod is replaced; PostgreSQL in the cluster comes next.
+The app pods are stateless: notes live in PostgreSQL on the PersistentVolumeClaim and survive replaced app and db pods.
 
 ------------------------------------------------------------------------------------------
 

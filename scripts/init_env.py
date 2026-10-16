@@ -24,7 +24,7 @@ Inputs -> outputs: .env.example -> .env (repo root).
 
 Run: python scripts/init_env.py --help
 
-Gotchas: generated values are never printed, so they can't end up in a terminal log; read
+Notes: generated values are never printed, so they can't end up in a terminal log; read
 them in the file itself. Existing values are never changed, only missing keys appended.
 """
 
