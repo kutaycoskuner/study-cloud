@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+    <img alt="CI" src="https://github.com/kutaycoskuner/study-cloud/actions/workflows/ci.yml/badge.svg" />
     <img alt="Python" src="https://img.shields.io/badge/Python-3.10+-blue" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/study-cloud" />
 </p>
@@ -27,6 +28,7 @@
 
 - [docs/](docs/README.md): background and explanations, indexed
     - [Docker](docs/docker.md): the image, containers, and the app with PostgreSQL in Docker Compose
+    - [Continuous integration](docs/continuous-integration.md): tests and image build on every push (GitHub Actions), and other CI tools
     - [Kubernetes](docs/kubernetes.md): the objects this project uses (Deployment, Service, Secret, storage) and how they fit together
 
 ------------------------------------------------------------------------------------------
@@ -35,11 +37,15 @@
 
 ```
 study-cloud/
+├── .github/
+│   └── workflows/
+│       └── ci.yml       # CI: tests, then a Docker image build, on every push
 ├── app/
 │   ├── db.py            # database connection and the notes table
 │   └── main.py          # FastAPI app: /health and the notes endpoints
 ├── docs/
 │   ├── README.md        # index of the docs
+│   ├── continuous-integration.md  # CI concepts, this workflow, other CI tools
 │   ├── docker.md        # Docker and Compose concepts and lessons
 │   └── kubernetes.md    # Kubernetes concepts and lessons
 ├── kubernetes/

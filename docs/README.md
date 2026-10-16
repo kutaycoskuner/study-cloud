@@ -13,6 +13,13 @@ Background and explanations for this project. Setup and quick start stay in the 
         - [Housekeeping](docker.md#housekeeping)
         - [Lessons](docker.md#lessons)
         - [This project's files](docker.md#this-projects-files)
+- Continuous integration
+    - [continuous-integration.md](continuous-integration.md): automatic tests and image builds on every push, and other ways to do CI
+        - [What CI is](continuous-integration.md#what-ci-is)
+        - [This project's workflow](continuous-integration.md#this-projects-workflow)
+        - [Other ways to do CI](continuous-integration.md#other-ways-to-do-ci)
+        - [Lessons](continuous-integration.md#lessons)
+        - [This project's files](continuous-integration.md#this-projects-files)
 - Kubernetes
     - [kubernetes.md](kubernetes.md): the Kubernetes objects this project uses and how they fit together
         - [Big picture](kubernetes.md#big-picture)
