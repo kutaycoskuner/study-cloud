@@ -1,0 +1,42 @@
+# The app: Kubernetes keeps `replicas` pods of the study-cloud image running, connected to
+# the db Service through DATABASE_URL (built from the Secret db-credentials), with health
+# probes on /health.
+# Apply: kubectl apply -f kubernetes/   (the Secret must exist first, see README)
+
+apiVersion: apps/v1          # which part of the Kubernetes API this object belongs to
+kind: Deployment             # what kind of object this is
+metadata:
+  name: app                  # its name in the cluster
+spec:
+  replicas: 2                # how many pods to keep running
+  selector:
+    matchLabels:
+      app: study-cloud       # "the pods with this label are mine"
+  template:                  # the blueprint for each pod
+    metadata:
+      labels:
+        app: study-cloud     # every pod gets this label, so the selector finds it
+    spec:
+      containers:
+        - name: app
+          image: study-cloud:dev   # the image you just loaded
+          ports:
+            - containerPort: 8000
+          env:
+            # the three values from the Secret, one by one...
+            - name: POSTGRES_USER
+              valueFrom: { secretKeyRef: { name: db-credentials, key: POSTGRES_USER } }
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: db-credentials, key: POSTGRES_PASSWORD } }
+            - name: POSTGRES_DB
+              valueFrom: { secretKeyRef: { name: db-credentials, key: POSTGRES_DB } }
+            # ...then combined; $(NAME) refers to the variables defined above
+            - name: DATABASE_URL
+              value: postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@db:5432/$(POSTGRES_DB)
+          readinessProbe:          # "can this pod take traffic?" - until yes, the Service sends it nothing
+            httpGet: { path: /health, port: 8000 }
+            periodSeconds: 5
+          livenessProbe:           # "is this pod still alive?" - if no, Kubernetes restarts it
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10

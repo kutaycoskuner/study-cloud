@@ -1,0 +1,11 @@
+# Storage for the database that outlives its pods (like the volume db-data in Compose).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-data
+spec:
+  accessModes:
+    - ReadWriteOnce        # one node at a time may write to it
+  resources:
+    requests:
+      storage: 1Gi         # how much space to reserve

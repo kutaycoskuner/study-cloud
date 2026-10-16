@@ -1,0 +1,13 @@
+# A stable address for the app pods: the name "app" inside the cluster, port 8000.
+# Apply: kubectl apply -f kubernetes/
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  selector:
+    app: study-cloud     # send traffic to the pods with this label
+  ports:
+    - port: 8000         # the Service's port
+      targetPort: 8000   # the container's port it forwards to

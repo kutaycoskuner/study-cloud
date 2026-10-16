@@ -1,0 +1,36 @@
+# Documentation
+
+Background and explanations for this project. Setup and quick start stay in the [root README](../README.md).
+
+- Docker
+    - [docker.md](docker.md): the image, containers, and the app with PostgreSQL in Docker Compose
+        - [Big picture](docker.md#big-picture)
+        - [The Dockerfile](docker.md#the-dockerfile)
+        - [The build context and .dockerignore](docker.md#the-build-context-and-dockerignore)
+        - [Running a container](docker.md#running-a-container)
+        - [Docker Compose](docker.md#docker-compose)
+        - [Secrets](docker.md#secrets)
+        - [Housekeeping](docker.md#housekeeping)
+        - [Lessons](docker.md#lessons)
+        - [This project's files](docker.md#this-projects-files)
+- Continuous integration
+    - [continuous-integration.md](continuous-integration.md): automatic tests and image builds on every push, and other ways to do CI
+        - [What CI is](continuous-integration.md#what-ci-is)
+        - [This project's workflow](continuous-integration.md#this-projects-workflow)
+        - [Other ways to do CI](continuous-integration.md#other-ways-to-do-ci)
+        - [Lessons](continuous-integration.md#lessons)
+        - [This project's files](continuous-integration.md#this-projects-files)
+- Kubernetes
+    - [kubernetes.md](kubernetes.md): the Kubernetes objects this project uses and how they fit together
+        - [Big picture](kubernetes.md#big-picture)
+        - [From Compose to Kubernetes](kubernetes.md#from-compose-to-kubernetes)
+        - [Cluster parts](kubernetes.md#cluster-parts)
+        - [Pod and Deployment](kubernetes.md#pod-and-deployment)
+        - [Service](kubernetes.md#service)
+        - [Storage (PVC)](kubernetes.md#storage-pvc)
+        - [Secret](kubernetes.md#secret)
+        - [Connecting the app](kubernetes.md#connecting-the-app)
+        - [Health probes](kubernetes.md#health-probes)
+        - [How the pieces connect](kubernetes.md#how-the-pieces-connect)
+        - [Lessons](kubernetes.md#lessons)
+        - [This project's files](kubernetes.md#this-projects-files)

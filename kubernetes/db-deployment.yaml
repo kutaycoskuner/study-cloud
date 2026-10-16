@@ -1,0 +1,35 @@
+# PostgreSQL: one pod, its data on the db-data claim, credentials from the Secret.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate         # stop the old pod before starting a new one: never two databases on the same files
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          envFrom:
+            - secretRef:
+                name: db-credentials     # every entry becomes an environment variable
+          env:
+            - name: PGDATA               # a subfolder, so PostgreSQL finds an empty directory to initialize
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: db-data

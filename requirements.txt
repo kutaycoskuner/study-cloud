@@ -1,0 +1,14 @@
+# -----------------------------------------------------------------------------------------
+#   author          : Kutay Coskuner
+#   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
+#   last update     : 2026-10-13
+#   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+#                     Check outputs before relying on them.
+# -----------------------------------------------------------------------------------------
+# Dependencies for the app and its tests. Pinned to the versions the tests passed with.
+fastapi==0.143.0        # the web framework
+uvicorn==0.54.0         # the server that runs the app
+sqlalchemy==2.0.54      # database toolkit: tables as Python classes, SQL generated
+psycopg[binary]==3.3.6  # PostgreSQL driver used by SQLAlchemy
+pytest==9.1.1           # test runner
+httpx==0.28.1           # used by FastAPI's TestClient

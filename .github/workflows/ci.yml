@@ -1,0 +1,26 @@
+# Runs on every push and pull request: the tests, then a Docker image build.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest            # a fresh Linux machine from GitHub
+    steps:
+      - uses: actions/checkout@v4     # get the repo's code onto the machine
+      - uses: actions/setup-python@v5 # install Python
+        with:
+          python-version: "3.10"      # the version the app is tested with locally
+          cache: pip                  # reuse downloaded packages between runs
+      - run: pip install -r requirements.txt
+      - run: python -m pytest
+
+  build:
+    needs: test                       # only runs if the test job passed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t study-cloud:ci .
