@@ -2,21 +2,31 @@
 #               self
 # ----------------------------------------------------------------------------------------
 
+# documentation and temporary
 _documentation
-
 _temp/
-input/
 
+# other linked projects
 linked_projects/
 
+# agent skills
 .agents/
 .claude/
+input/
 
+# environment password etc.
 .env
 **/.env
 
+# databases
 *.db
 
+# terraform: downloaded providers, state (can hold secrets), variable values, crash logs
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
 
 # ----------------------------------------------------------------------------------------
 #               base: github python

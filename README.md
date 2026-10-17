@@ -19,8 +19,7 @@
 1. **Service** (done): FastAPI app with a health check and a notes API, plus tests
 2. **Docker** (done): Dockerfile, Compose with PostgreSQL, data in a volume
 3. **Kubernetes, locally** (done): app and PostgreSQL on a local kind cluster: Deployments, Services, Secret, persistent storage, health probes
-4. **AWS:** the image in ECR, running on EC2 or ECS (free tier)
-5. **Terraform:** the AWS setup as code
+4. **Terraform** (in progress): infrastructure as code: the Compose stack with Terraform's Docker provider first (local, free), then AWS created through Terraform (the image in ECR, running on EC2 or ECS)
 
 ------------------------------------------------------------------------------------------
 
@@ -30,6 +29,7 @@
     - [Docker](docs/docker.md): the image, containers, and the app with PostgreSQL in Docker Compose
     - [Continuous integration](docs/continuous-integration.md): tests and image build on every push (GitHub Actions), and other CI tools
     - [Kubernetes](docs/kubernetes.md): the objects this project uses (Deployment, Service, Secret, storage) and how they fit together
+    - [Terraform](docs/terraform.md): infrastructure as code, the ideas behind Terraform, and how this project uses it
 
 ------------------------------------------------------------------------------------------
 
@@ -47,7 +47,8 @@ study-cloud/
 │   ├── README.md        # index of the docs
 │   ├── continuous-integration.md  # CI concepts, this workflow, other CI tools
 │   ├── docker.md        # Docker and Compose concepts and lessons
-│   └── kubernetes.md    # Kubernetes concepts and lessons
+│   ├── kubernetes.md    # Kubernetes concepts and lessons
+│   └── terraform.md     # Terraform concepts and how this project uses it
 ├── kubernetes/
 │   ├── app-deployment.yaml  # keeps 2 app pods running
 │   ├── app-service.yaml     # stable name "app" in front of the app pods

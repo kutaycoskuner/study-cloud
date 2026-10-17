@@ -34,3 +34,10 @@ Background and explanations for this project. Setup and quick start stay in the 
         - [How the pieces connect](kubernetes.md#how-the-pieces-connect)
         - [Lessons](kubernetes.md#lessons)
         - [This project's files](kubernetes.md#this-projects-files)
+- Terraform
+    - [terraform.md](terraform.md): infrastructure as code, the ideas behind Terraform, and how this project uses it
+        - [What Terraform is](terraform.md#what-terraform-is)
+        - [Is it free?](terraform.md#is-it-free)
+        - [Core ideas](terraform.md#core-ideas)
+        - [Similar tools](terraform.md#similar-tools)
+        - [How it fits this project](terraform.md#how-it-fits-this-project)
